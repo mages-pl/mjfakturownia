@@ -926,7 +926,7 @@ class Mjfakturownia extends Module
                 //------------------------------------------------------
                 // Ustaw ilości dla zwyłych produktów
                 //------------------------------------------------------
-                $p = Mjfakturownia::getIdByReference($result_produkty->id);//$product->id
+                $p = @Mjfakturownia::getIdByReference($result_produkty->id);//$product->id
                 if ($p) {
                     $prod = new Product($p);
                     $prod->quantity = (int) $result_produkty->warehouse_quantity;
