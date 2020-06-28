@@ -1,0 +1,32 @@
+<?php
+
+global $_MODULE;
+$_MODULE = array();
+$_MODULE['<{fakturownia}prestashop>fakturownia_c2657f133e8615f7dba3ddfe13125bd4'] = 'Fakturownia';
+$_MODULE['<{fakturownia}prestashop>fakturownia_0f7431650cc1691fbe92dc2cbb70e476'] = 'Integruje PrestaShop z Twoim kontem na Fakturowni';
+$_MODULE['<{fakturownia}prestashop>fakturownia_f6d298461123eeef83830b5e85599ea6'] = 'Należy uzupełnić pole \"api token\" w konfiguracji modułu';
+$_MODULE['<{fakturownia}prestashop>fakturownia_3ebb01a06a924554fe7b366fe5e76f19'] = 'Ten moduł wymaga PrestaShop w wersji 1.5 lub wyższej';
+$_MODULE['<{fakturownia}prestashop>fakturownia_5be000cd9b4c7d25efca31f0d5d77fc7'] = 'Integracja z ';
+$_MODULE['<{fakturownia}prestashop>fakturownia_ac2cc0b62b6a5b76735c499ec524607f'] = 'Pole \"Token API\" jest wymagane';
+$_MODULE['<{fakturownia}prestashop>fakturownia_106da116dd1daa18f3e4d4bb3203c0d6'] = 'Test1 połączenia (sprawdzenie poprawności tokenu API) nie powiódł się - popraw dane';
+$_MODULE['<{fakturownia}prestashop>fakturownia_805c9aaea9e5c95031c5e787c18dbf79'] = 'Test2 połączenia (sprawdzanie danych firmy) nie powiódł się - proszę wypełnić dane na koncie Fakturowni';
+$_MODULE['<{fakturownia}prestashop>fakturownia_2570a8042648122886a5f68c2f1ead01'] = 'Test3 połączenia (wystawienie testowej faktury) nie powiódł się - upewnij się, że konto jest aktywne';
+$_MODULE['<{fakturownia}prestashop>fakturownia_2322ba8227735724001564ca8a0646e7'] = 'Zapisano ustawienia';
+$_MODULE['<{fakturownia}prestashop>fakturownia_945670cf60281694da8858bc39ac6ccf'] = 'Moduł umożliwia wystawianie dokumentów (faktur VAT i paragonów) do zamówień na Twoim koncie na Fakturowni. Wystawianie faktur proform w Prestashop pozostaje bez zmian.';
+$_MODULE['<{fakturownia}prestashop>fakturownia_8493b1de591a1b5710872dad3292fcd9'] = 'Jeśli nie masz jeszcze konta na Fakturowni:';
+$_MODULE['<{fakturownia}prestashop>fakturownia_f23ccb2a47e940aa51eda70e944b8b5e'] = 'załóż konto';
+$_MODULE['<{fakturownia}prestashop>fakturownia_7f6d42181c41713af18bfd02e2ab3635'] = 'pomoc';
+$_MODULE['<{fakturownia}prestashop>fakturownia_c3c1fc415f6f9ee1a934879298f6c0f1'] = 'Ustawienia połączenia';
+$_MODULE['<{fakturownia}prestashop>fakturownia_68048b83c3a4bba53244f5ebafd43d51'] = 'Token API';
+$_MODULE['<{fakturownia}prestashop>fakturownia_b644fad46b034afe75e3b05eface832b'] = 'Automatyczne wystawianie dokumentu na Fakturowni po opłacie zamówienia';
+$_MODULE['<{fakturownia}prestashop>fakturownia_075ae3d2fc31640504f814f60e5ef713'] = 'NIE';
+$_MODULE['<{fakturownia}prestashop>fakturownia_a10311459433adf322f2590a4987c423'] = 'TAK';
+$_MODULE['<{fakturownia}prestashop>fakturownia_14d6bd5b3df9789d095d039b600d2d5e'] = 'Rodzaj automatycznie wystawianego dokumentu';
+$_MODULE['<{fakturownia}prestashop>fakturownia_9b32af5ea3f5f44b839cd35eba2e3e88'] = 'Faktura VAT lub paragon';
+$_MODULE['<{fakturownia}prestashop>fakturownia_6180ec15f52323718bfc0449840f12a6'] = 'Zawsze faktura VAT';
+$_MODULE['<{fakturownia}prestashop>fakturownia_df6d101beb3918a9405f8c48245004df'] = 'Zawsze paragon';
+$_MODULE['<{fakturownia}prestashop>fakturownia_4992438869633fb30ced0906855acb8b'] = 'Automatyczne wysyłanie dokumentu e-mailem z Fakturowni';
+$_MODULE['<{fakturownia}prestashop>fakturownia_bf9d2d2d3ab45d41afcf1c86e379438b'] = 'Zapisz ustawienia';
+$_MODULE['<{fakturownia}prestashop>fakturownia_31211b6813083b13df997b9e3abbbd2b'] = 'Wysyłka';
+$_MODULE['<{fakturownia}prestashop>fakturownia_e3dc660072bcf5656615131dc219ba7e'] = 'Błąd podczas generowania faktury do zamówienia: ';
+$_MODULE['<{fakturownia}prestashop>fakturownia_1dd81fc9fd2e549d11c981ee7c183676'] = 'Nie utworzono faktury na ';

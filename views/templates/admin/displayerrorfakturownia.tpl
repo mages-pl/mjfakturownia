@@ -1,0 +1,1 @@
+<div class="clearfix"></div>' .<span class='alert alert-danger'>{l s='Missing settings in Fakturownia integration' mod='mjfakturownia'}</span>
