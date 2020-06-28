@@ -873,7 +873,7 @@ class Mjfakturownia extends Module
         $last_invoice = $this->getLastinvoice($id_order);
         if (empty($last_invoice) || (!empty($last_invoice) && $last_invoice[0]['external_id'] == 0)) { //czy w miedzyczasie nie wystawila sie automatycznie
             $result = $this->issueInvoice($invoice_data, $url);
-            if(count($last_invoice) > 0) {
+            if (count($last_invoice) > 0) {
                 $this->aktualizujFakture($id_order, $result->id);
             } else {
                 $this->dodajFakture($id_order, $result->id, 'invoice');
