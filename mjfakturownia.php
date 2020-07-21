@@ -1199,7 +1199,7 @@ class Mjfakturownia extends Module
      */
     public function makeCorrection($order, $id_invoice)
         {
-            // Dodaj fakturę korygującą
+        // Dodaj fakturę korygującą
          
             $address = new Address($order->id_address_invoice);
             $customer = new Customer($order->id_customer);
@@ -1210,52 +1210,52 @@ class Mjfakturownia extends Module
 		LEFT JOIN `'._DB_PREFIX_.'product_shop` ps ON (ps.id_product = p.id_product AND ps.id_shop = od.id_shop)
 		LEFT JOIN `'._DB_PREFIX_.'tax_rule` tr ON (tr.id_tax_rules_group = ps.id_tax_rules_group)
 		LEFT JOIN `'._DB_PREFIX_.'tax` t ON (t.id_tax = tr.id_tax)
-		WHERE od.`id_order` = '.(int)($order->id).' AND tr.`id_country` = '.(int)(Context::getContext()->country->id) );
+		WHERE od.`id_order` = '.(int)($order->id).' AND tr.`id_country` = '.(int)(Context::getContext()->country->id));
 
-		$positions = array();
+                $positions = array();
 
-		$quantity_unit = 'szt.';
+                $quantity_unit = 'szt.';
 
                 $tax_rate = 0;
                 foreach ($products as $pr) {
-		$tax_rate = $pr['rate'];
-			$zestaw = '';
+                    $tax_rate = $pr['rate'];
+                    $zestaw = '';
 
-			if ($pr['cache_is_pack'] != 0) {
-			
-				$pack_items = (new Pack())->getItems($pr['id_product'], $this->context->language->id);
+                    if ($pr['cache_is_pack'] != 0) {
 
-				foreach ($pack_items as $key => $pack) {
-					$zestaw .= ' '.$pack->name.' ('.$pack->reference.') x'.$pack->pack_quantity.' ';
-				}
-			}
+                            $pack_items = (new Pack())->getItems($pr['id_product'], $this->context->language->id);
 
-                        $nazwa = (($pr['cache_is_pack']!=0) ? '[Zestaw] ' : '').$pr['product_name'].' ('.$pr['product_reference'].')'.(($pr['cache_is_pack']!=0) ? $zestaw : '');
+                            foreach ($pack_items as $key => $pack) {
+                                    $zestaw .= ' '.$pack->name.' ('.$pack->reference.') x'.$pack->pack_quantity.' ';
+                            }
+                    }
+
+                    $nazwa = (($pr['cache_is_pack']!=0) ? '[Zestaw] ' : '').$pr['product_name'].' ('.$pr['product_reference'].')'.(($pr['cache_is_pack']!=0) ? $zestaw : '');
                         
-            $position = array(
-                'name' => $nazwa,
-                'quantity' => $pr['product_quantity']*(-1),
-                'kind' => "correction",
-                'total_price_gross' => $pr['total_price_tax_incl']*(-1),
-                'tax' => $pr['rate'],
-                'correction_before_attributes' => array(
-                    'name' => $nazwa,
-                    'quantity' => $pr['product_quantity'],
-                    'total_price_gross' => $pr['total_price_tax_incl'],
-                    'tax' => $pr['rate'],
-                    "kind" =>  "correction_before"
-                ),
-                'correction_after_attributes' => array(
-                    'name' => $nazwa,
-                    'quantity' => 0,
-                    'total_price_gross' => $pr['total_price_tax_incl'],
-                    'tax' => $pr['rate'],
-                    "kind" => "correction_after"
-                )
-            );
+                    $position = array(
+                        'name' => $nazwa,
+                        'quantity' => $pr['product_quantity']*(-1),
+                        'kind' => "correction",
+                        'total_price_gross' => $pr['total_price_tax_incl']*(-1),
+                        'tax' => $pr['rate'],
+                        'correction_before_attributes' => array(
+                            'name' => $nazwa,
+                            'quantity' => $pr['product_quantity'],
+                            'total_price_gross' => $pr['total_price_tax_incl'],
+                            'tax' => $pr['rate'],
+                            "kind" =>  "correction_before"
+                        ),
+                        'correction_after_attributes' => array(
+                            'name' => $nazwa,
+                            'quantity' => 0,
+                            'total_price_gross' => $pr['total_price_tax_incl'],
+                            'tax' => $pr['rate'],
+                            "kind" => "correction_after"
+                        )
+                    );
 
-                $positions[] = $position; // <- tablica z pozycjami na fakturze
-            }
+                    $positions[] = $position; // <- tablica z pozycjami na fakturze
+                }
             
             //Pobranie wysyłki
             $carriage = array(
@@ -1283,75 +1283,75 @@ class Mjfakturownia extends Module
 			$positions[] = $carriage;
 		}
 
-                // Pobranie zniżek
-		if ((float)$order->total_discounts != 0.00) {
-			foreach ($order->getDiscounts() as $disc) {
-				$discount = array(
+            // Pobranie zniżek
+            if ((float)$order->total_discounts != 0.00) {
+                    foreach ($order->getDiscounts() as $disc) {
+                            $discount = array(
+                                'name' => $disc['name'],
+                                'quantity' => -1,
+                                'kind' => "correction",
+                                'total_price_gross' => (float)$disc['value'],
+                                'tax' => $tax_rate,
+                                'correction_before_attributes' => array(
                                     'name' => $disc['name'],
-                                    'quantity' => -1,
-                                    'kind' => "correction",
-                                    'total_price_gross' => (float)$disc['value'],
+                                    'quantity' => 1,
+                                    'total_price_gross' => -(float)$disc['value'],
                                     'tax' => $tax_rate,
-                                    'correction_before_attributes' => array(
-                                        'name' => $disc['name'],
-                                        'quantity' => 1,
-                                        'total_price_gross' => -(float)$disc['value'],
-                                        'tax' => $tax_rate,
-                                        "kind" =>  "correction_before"
-                                    ),
-                                    'correction_after_attributes' => array(
-                                        'name' => $disc['name'],
-                                        'quantity' => 0,
-                                        'total_price_gross' => 0,
-                                        'tax' => $tax_rate,
-                                        "kind" => "correction_after"
-                                    )
-				);
+                                    "kind" =>  "correction_before"
+                                ),
+                                'correction_after_attributes' => array(
+                                    'name' => $disc['name'],
+                                    'quantity' => 0,
+                                    'total_price_gross' => 0,
+                                    'tax' => $tax_rate,
+                                    "kind" => "correction_after"
+                                )
+                            );
 
-				$positions[] = $discount;
-			}
-		}
-                
-            $country = new Country($address->id_country);
-            $buyer_name = (!empty($address->company) ? $address->company : $address->firstname . ' ' . $address->lastname);
-            $buyer_street = (empty($address->address2) ? $address->address1 : $address->address1 . ', ' . $address->address2);
-            $host = Configuration::get('mjfakturownia_login').'.fakturownia.pl';
-            $token = $this->api_token;
-            $json ='{ "api_token": "'.$token.'", "invoice": { "kind":"correction", '
-                    . '"status" : "paid", '
-                    . '"correction_reason": "Zwrot zamówienia #'.$order->reference.'", '
-                    . '"invoice_id": "'.$id_invoice.'", '
-                    . '"from_invoice_id": "'.$id_invoice.'", '
-                    . '"buyer_name" : "'.$buyer_name.'",'
-                    . '"buyer_city" : "'.$address->city.'",'
-                    . '"buyer_phone" : "'.$address->phone.'",'
-                    . '"buyer_country" : "'.$country->iso_code.'",'
-                    . '"buyer_post_code" : "'.$address->postcode.'",'
-                    . '"buyer_email" : "'.$customer->email.'",'
-                    . '"buyer_street" : "'.$buyer_street.'",'
-                    . '"positions": '.json_encode($positions).'}}';
+                            $positions[] = $discount;
+                    }
+            }
 
-            $c = curl_init();
-            curl_setopt($c, CURLOPT_URL, 'https://'.$host.'/invoices.json');
-            $head = array();
-            $head[] ='Accept: application/json';
-            $head[] ='Content-Type: application/json';
-            curl_setopt($c, CURLOPT_HTTPHEADER, $head);
-            curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($c, CURLOPT_POSTFIELDS, $json);
-             
-            $response = @json_decode(curl_exec($c));
-                
-            // update id_fv_kor
-            $sql = "UPDATE "._DB_PREFIX_."mjfakturownia_invoice SET id_kor = '".pSQL($response->id)."' WHERE id_order = '".pSQL($order->id)."'";
-            DB::getInstance()->Execute($sql, 1, 0);
-            
-            /**
-            * Wyślij email
-            */
-            $this->sendEmail($response);
-       
-            return $this->displayConfirmation($this->l('Correction has correctly sent', 'mjfakturownia'));
+        $country = new Country($address->id_country);
+        $buyer_name = (!empty($address->company) ? $address->company : $address->firstname . ' ' . $address->lastname);
+        $buyer_street = (empty($address->address2) ? $address->address1 : $address->address1 . ', ' . $address->address2);
+        $host = Configuration::get('mjfakturownia_login').'.fakturownia.pl';
+        $token = $this->api_token;
+        $json ='{ "api_token": "'.$token.'", "invoice": { "kind":"correction", '
+                . '"status" : "paid", '
+                . '"correction_reason": "Zwrot zamówienia #'.$order->reference.'", '
+                . '"invoice_id": "'.$id_invoice.'", '
+                . '"from_invoice_id": "'.$id_invoice.'", '
+                . '"buyer_name" : "'.$buyer_name.'",'
+                . '"buyer_city" : "'.$address->city.'",'
+                . '"buyer_phone" : "'.$address->phone.'",'
+                . '"buyer_country" : "'.$country->iso_code.'",'
+                . '"buyer_post_code" : "'.$address->postcode.'",'
+                . '"buyer_email" : "'.$customer->email.'",'
+                . '"buyer_street" : "'.$buyer_street.'",'
+                . '"positions": '.json_encode($positions).'}}';
+
+        $c = curl_init();
+        curl_setopt($c, CURLOPT_URL, 'https://'.$host.'/invoices.json');
+        $head = array();
+        $head[] ='Accept: application/json';
+        $head[] ='Content-Type: application/json';
+        curl_setopt($c, CURLOPT_HTTPHEADER, $head);
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($c, CURLOPT_POSTFIELDS, $json);
+
+        $response = @json_decode(curl_exec($c));
+
+        // update id_fv_kor
+        $sql = "UPDATE "._DB_PREFIX_."mjfakturownia_invoice SET id_kor = '".pSQL($response->id)."' WHERE id_order = '".pSQL($order->id)."'";
+        DB::getInstance()->Execute($sql, 1, 0);
+
+        /**
+        * Wyślij email
+        */
+        $this->sendEmail($response);
+
+        return $this->displayConfirmation($this->l('Correction has correctly sent', 'mjfakturownia'));
     }
     
     /**
