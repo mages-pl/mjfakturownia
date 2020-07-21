@@ -15,11 +15,6 @@ class MjfakturowniaStocksModuleFrontController extends ModuleFrontControllerCore
     public $auth = true;
     public $authRedirection = true;
 
-    public $orders_detail = array();
-    
-    public  $limit_od;
-    public  $limit_do;
-    
     public function __construct()
     {
 

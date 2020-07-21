@@ -16,7 +16,7 @@ class MjfakturowniaCronreturnsModuleFrontController extends ModuleFrontControlle
     public $auth = false;
 
     
-     public function __construct()
+    public function __construct()
     {
         $this->name = (new Mjfakturownia())->name;
         $this->prefix = $this->name.'_';

@@ -93,12 +93,12 @@ class Mjfakturownia extends Module
         PRIMARY KEY (`id_mjfakturownia`),
         KEY `id_order` (`id_order`)) DEFAULT CHARSET=utf8;';
 
-        return parent::install() 
-                && $this->registerHook('actionOrderStatusPostUpdate') 
-                && $this->registerHook('displayAdminOrder') 
-                && $this->registerHook('actionValidateOrder') 
-                && $this->registerHook('actionOrderReturn') 
-                && $this->registerHook('actionObjectUpdateAfter') 
+        return parent::install()
+                && $this->registerHook('actionOrderStatusPostUpdate')
+                && $this->registerHook('displayAdminOrder')
+                && $this->registerHook('actionValidateOrder')
+                && $this->registerHook('actionOrderReturn')
+                && $this->registerHook('actionObjectUpdateAfter')
                 && Db::getInstance()->Execute($createTable)
                 && Configuration::updateValue($this->prefix.'token', Tools::passwdGen(8))
                 && Configuration::updateValue($this->prefix.'api_url', "fakturownia.pl")
@@ -113,8 +113,8 @@ class Mjfakturownia extends Module
      */
     public function hookActionObjectUpdateAfter()
     {
-         if(Tools::isSubmit('submitAddorder_return')) {
-            if(Tools::getValue('id_order_return')) {
+        if (Tools::isSubmit('submitAddorder_return')) {
+            if (Tools::getValue('id_order_return')) {
                 if (Configuration::get('mjfakturownia_status_zamowienia_korekta') == Tools::getValue('state')) {
                     $getOrderReturn = new OrderReturn(Tools::getValue('id_order_return'));
                     $id_order = $getOrderReturn->id_order;
@@ -302,7 +302,7 @@ class Mjfakturownia extends Module
      */
     public function uninstall()
     {
-        return parent::uninstall() 
+        return parent::uninstall()
         && $this->uninstallModuleTab('AdminMjfakturowniainvoice');
     }
     
@@ -1085,9 +1085,9 @@ class Mjfakturownia extends Module
      */
     private function sendEmail($result)
     {
-        if(Configuration::get($this->prefix.'email_wysylka') == '1'){
+        if (Configuration::get($this->prefix.'email_wysylka') == '1'){
             $url = $this->getInvoicesurl($this->account_prefix).'/'.$result->id.'/send_by_email.json?api_token='.$this->api_token;
-            $this->makeRequest($url, 'POST', NULL);
+            $this->makeRequest($url, 'POST', null);
         }
     }
     /**
@@ -1221,11 +1221,11 @@ class Mjfakturownia extends Module
 		$tax_rate = $pr['rate'];
 			$zestaw = '';
 
-			if($pr['cache_is_pack'] != 0) {
+			if ($pr['cache_is_pack'] != 0) {
 			
 				$pack_items = (new Pack())->getItems($pr['id_product'], $this->context->language->id);
 
-				foreach($pack_items as $key => $pack) {
+				foreach ($pack_items as $key => $pack) {
 					$zestaw .= ' '.$pack->name.' ('.$pack->reference.') x'.$pack->pack_quantity.' ';
 				}
 			}
@@ -1333,7 +1333,7 @@ class Mjfakturownia extends Module
 
             $c = curl_init();
             curl_setopt($c, CURLOPT_URL, 'https://'.$host.'/invoices.json');
-
+            $head = array();
             $head[] ='Accept: application/json';
             $head[] ='Content-Type: application/json';
             curl_setopt($c, CURLOPT_HTTPHEADER, $head);
@@ -1360,11 +1360,11 @@ class Mjfakturownia extends Module
     public function syncReturns()
     {
         //Pobierz wszystkie zwroty z ostatnich 14 dni i statusem (zaakceptowane)
-        // Sprawdź które z nich są w tabeli z fakturownią 
+        // Sprawdź które z nich są w tabeli z fakturownią
         // Te niestniejące w tabeli a istniejące w modelu Returns wystaw pętlą
-        foreach($this->getReturns() as $return) {
+        foreach ($this->getReturns() as $return) {
             $checkIfExistFakturownia = "SELECT * FROM "._DB_PREFIX_."mjfakturownia_invoice WHERE id_kor = '0' AND id_fv != '0'";
-            foreach(DB::getInstance()->ExecuteS($checkIfExistFakturownia, 1, 0) as $doKorekty) {
+            foreach (DB::getInstance()->ExecuteS($checkIfExistFakturownia, 1, 0) as $doKorekty) {
                 $order = new Order($return['id_order']);
                 $this->makeCorrection($order, $doKorekty['id_fv']);
             }
@@ -1376,7 +1376,7 @@ class Mjfakturownia extends Module
      * Zwrócenie listy zwrotów z ostatnich 14 dni z okreslonym statuse (zaakceptowane)
      * @return type
      */
-    private function getReturns() 
+    private function getReturns()
     {
         $prev_date = date('Y-m-d', strtotime("-14 day", strtotime(date('Y-m-d'))));
         $sql = "SELECT * FROM "._DB_PREFIX_."order_return WHERE date_add >= '".$prev_date."' AND state = '".Configuration::get($this->prefix.'status_zwrotu_korekta')."'";

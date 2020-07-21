@@ -56,7 +56,7 @@ class AdminMjfakturowniainvoiceController extends ModuleAdminController
         parent::initContent();
         $order = new Order($this->id_order);
         $f = new Mjfakturownia();
-        if(Tools::getValue('status') == 'invoice') {
+        if (Tools::getValue('status') == 'invoice') {
             $f->sendInvoice($this->id_order, Tools::getValue('kind'));
         } else {
             if (!empty($this->invoice) && $this->invoice == 1) {

@@ -15,8 +15,8 @@ class MjfakturowniaCroninvoicesModuleFrontController extends ModuleFrontControll
     public $display_column_left = false;
     public $auth = false;
 
-    
-     public function __construct()
+
+    public function __construct()
     {
         $this->name = (new Mjfakturownia())->name;
         $this->prefix = $this->name.'_';

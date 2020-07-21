@@ -13,7 +13,7 @@ class HistoryController extends HistoryControllerCore
      * @param type $id_order
      * @return boolean
      */
-   public static function getMjfakturowniaInvoiceUrl($id_order)
+    public static function getMjfakturowniaInvoiceUrl($id_order)
     {
         if ($id_order != null) {
             $query = 'SELECT * FROM `' . _DB_PREFIX_ . 'mjfakturownia_invoice` WHERE id_order = "' . $id_order . '"';
