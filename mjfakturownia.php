@@ -194,8 +194,7 @@ class Mjfakturownia extends Module
 //        echo "COUNT:".count($checkInvoice);
         $allow_states = unserialize(Configuration::get($this->prefix.'status_zamowienia_store'));
         if ((count($lastInvoice) == 0)) { //??tu cos nie tak //&& Configuration::get($this->prefix . 'automatyczne') == '1') {
-            if ((in_array($params['newOrderStatus']->id, $allow_states)))
-            {
+            if ((in_array($params['newOrderStatus']->id, $allow_states))) {
                 $url = $this->getInvoicesurl($this->account_prefix) . '.json';
                 $invoice_data = $this->invoiceFromorder($order, 'auto');
                 /**
@@ -1076,7 +1075,7 @@ class Mjfakturownia extends Module
         /**
         * Wyślij email
         */
-       $this->sendEmail($result);
+        $this->sendEmail($result);
     }
 
     /**
@@ -1085,7 +1084,7 @@ class Mjfakturownia extends Module
      */
     private function sendEmail($result)
     {
-        if (Configuration::get($this->prefix.'email_wysylka') == '1'){
+        if (Configuration::get($this->prefix.'email_wysylka') == '1') {
             $url = $this->getInvoicesurl($this->account_prefix).'/'.$result->id.'/send_by_email.json?api_token='.$this->api_token;
             $this->makeRequest($url, 'POST', null);
         }
@@ -1198,61 +1197,60 @@ class Mjfakturownia extends Module
      * @return type
      */
     public function makeCorrection($order, $id_invoice)
-        {
-        // Dodaj fakturę korygującą
-         
-            $address = new Address($order->id_address_invoice);
-            $customer = new Customer($order->id_customer);
-            $products = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-		SELECT *
-		FROM `'._DB_PREFIX_.'order_detail` od
-		LEFT JOIN `'._DB_PREFIX_.'product` p ON (p.id_product = od.product_id)
-		LEFT JOIN `'._DB_PREFIX_.'product_shop` ps ON (ps.id_product = p.id_product AND ps.id_shop = od.id_shop)
-		LEFT JOIN `'._DB_PREFIX_.'tax_rule` tr ON (tr.id_tax_rules_group = ps.id_tax_rules_group)
-		LEFT JOIN `'._DB_PREFIX_.'tax` t ON (t.id_tax = tr.id_tax)
-		WHERE od.`id_order` = '.(int)($order->id).' AND tr.`id_country` = '.(int)(Context::getContext()->country->id));
+    {
+    // Dodaj fakturę korygującą
+        $address = new Address($order->id_address_invoice);
+        $customer = new Customer($order->id_customer);
+        $products = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
+            SELECT *
+            FROM `'._DB_PREFIX_.'order_detail` od
+            LEFT JOIN `'._DB_PREFIX_.'product` p ON (p.id_product = od.product_id)
+            LEFT JOIN `'._DB_PREFIX_.'product_shop` ps ON (ps.id_product = p.id_product AND ps.id_shop = od.id_shop)
+            LEFT JOIN `'._DB_PREFIX_.'tax_rule` tr ON (tr.id_tax_rules_group = ps.id_tax_rules_group)
+            LEFT JOIN `'._DB_PREFIX_.'tax` t ON (t.id_tax = tr.id_tax)
+            WHERE od.`id_order` = '.(int)($order->id).' AND tr.`id_country` = '.(int)(Context::getContext()->country->id));
 
-                $positions = array();
+            $positions = array();
 
-                $quantity_unit = 'szt.';
+            $quantity_unit = 'szt.';
 
-                $tax_rate = 0;
-                foreach ($products as $pr) {
-                    $tax_rate = $pr['rate'];
-                    $zestaw = '';
+            $tax_rate = 0;
+            foreach ($products as $pr) {
+                $tax_rate = $pr['rate'];
+                $zestaw = '';
 
-                    if ($pr['cache_is_pack'] != 0) {
+                if ($pr['cache_is_pack'] != 0) {
 
-                            $pack_items = (new Pack())->getItems($pr['id_product'], $this->context->language->id);
+                        $pack_items = (new Pack())->getItems($pr['id_product'], $this->context->language->id);
 
-                            foreach ($pack_items as $key => $pack) {
-                                    $zestaw .= ' '.$pack->name.' ('.$pack->reference.') x'.$pack->pack_quantity.' ';
-                            }
-                    }
+                        foreach ($pack_items as $key => $pack) {
+                                $zestaw .= ' '.$pack->name.' ('.$pack->reference.') x'.$pack->pack_quantity.' ';
+                        }
+                }
 
-                    $nazwa = (($pr['cache_is_pack']!=0) ? '[Zestaw] ' : '').$pr['product_name'].' ('.$pr['product_reference'].')'.(($pr['cache_is_pack']!=0) ? $zestaw : '');
+                $nazwa = (($pr['cache_is_pack']!=0) ? '[Zestaw] ' : '').$pr['product_name'].' ('.$pr['product_reference'].')'.(($pr['cache_is_pack']!=0) ? $zestaw : '');
                         
-                    $position = array(
+                $position = array(
+                    'name' => $nazwa,
+                    'quantity' => $pr['product_quantity']*(-1),
+                    'kind' => "correction",
+                    'total_price_gross' => $pr['total_price_tax_incl']*(-1),
+                    'tax' => $pr['rate'],
+                    'correction_before_attributes' => array(
                         'name' => $nazwa,
-                        'quantity' => $pr['product_quantity']*(-1),
-                        'kind' => "correction",
-                        'total_price_gross' => $pr['total_price_tax_incl']*(-1),
+                        'quantity' => $pr['product_quantity'],
+                        'total_price_gross' => $pr['total_price_tax_incl'],
                         'tax' => $pr['rate'],
-                        'correction_before_attributes' => array(
-                            'name' => $nazwa,
-                            'quantity' => $pr['product_quantity'],
-                            'total_price_gross' => $pr['total_price_tax_incl'],
-                            'tax' => $pr['rate'],
-                            "kind" =>  "correction_before"
-                        ),
-                        'correction_after_attributes' => array(
-                            'name' => $nazwa,
-                            'quantity' => 0,
-                            'total_price_gross' => $pr['total_price_tax_incl'],
-                            'tax' => $pr['rate'],
-                            "kind" => "correction_after"
-                        )
-                    );
+                        "kind" =>  "correction_before"
+                    ),
+                    'correction_after_attributes' => array(
+                        'name' => $nazwa,
+                        'quantity' => 0,
+                        'total_price_gross' => $pr['total_price_tax_incl'],
+                        'tax' => $pr['rate'],
+                        "kind" => "correction_after"
+                    )
+                );
 
                     $positions[] = $position; // <- tablica z pozycjami na fakturze
                 }
@@ -1393,12 +1391,10 @@ class Mjfakturownia extends Module
         // Sprawdź staus zamówienia wyekstrahuj go z tablicy dozwolonych statusów
         // Dla zdefiniowanych w konfigu statusów wystaw faktury w pętli
         $getEmptyOrders = "SELECT * FROM "._DB_PREFIX_."mjfakturownia_invoice WHERE id_fv = '0'";
-        foreach (DB::getInstance()->Executes($getEmptyOrders, 1, 0) as $eo)
-        {
+        foreach (DB::getInstance()->Executes($getEmptyOrders, 1, 0) as $eo) {
             $order = new Order($eo['id_order']);
             $allow_states = unserialize(Configuration::get($this->prefix.'status_zamowienia_store'));
-            if ((in_array($order->current_state, $allow_states)))
-            {
+            if ((in_array($order->current_state, $allow_states))) {
                 $this->sendInvoice($order->id, 'auto');
             }
         }
